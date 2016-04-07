@@ -7,9 +7,18 @@
 
 void RELAY_Setup(){
   pinMode(RELAY_PIN,OUTPUT);
-  digitalWrite(RELAY_PIN,LOW);
+  RELAY_Off();
 }
 
 void RELAY_Loop(){
   
 }
+
+void RELAY_On(){
+  digitalWrite(RELAY_PIN,HIGH);
+}
+
+void RELAY_Off(){
+  digitalWrite(RELAY_PIN,LOW);
+}
+

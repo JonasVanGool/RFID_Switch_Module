@@ -9,8 +9,10 @@
 int readVal = 0; // individual character read from serial
 unsigned int readData[10]; // data read from serial
 int counter = -1; // counter to keep position in the buffer
-char tagId[11]; // final tag ID converted to a string
+char tagId[10]; // final tag ID converted to a string
 SoftwareSerial mySerial(RFID_PIN, 11); // RX, TX
+boolean badgeAvailable = false;
+long lastReadTime = 0;
 
 void RFID_Setup(){
   mySerial.begin(9600); 
@@ -38,6 +40,9 @@ void RFID_Loop(){
       
       // reset reading state
       counter = -1;
+
+      // Set badge available
+      badgeAvailable = true;
     }
     // if we are in the middle of reading a tag
     else if (counter >= 0) {
@@ -47,6 +52,22 @@ void RFID_Loop(){
       ++counter;
     } 
   }
+}
+
+void RFID_StartListening(){
+  mySerial.begin(9600); 
+}
+
+char* RFID_ReadBadge(){
+  lastReadTime = millis();
+  badgeAvailable = false;
+  return tagId;
+}
+
+boolean RFID_BadgeAvailable(){
+  if(millis()-lastReadTime < 1500)
+    return false;
+  return badgeAvailable;
 }
 
 //-----------------------
@@ -74,5 +95,4 @@ void parseTag() {
   for (i = 0; i < 10; ++i) {
     tagId[i] = readData[i];
   }
-  tagId[10] = 0;
 }

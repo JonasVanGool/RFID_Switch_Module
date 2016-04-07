@@ -1,13 +1,14 @@
+#include "types.h"
 //-----------------------
 // Setup
 //-----------------------
 void setup() {
+  FLOW_Setup();
   RFID_Setup();
   LED_Setup();
   EEPROM_Setup();
   BUZZER_Setup();
   RELAY_Setup();
-  FLOW_Setup();
 }
 
 //-----------------------
