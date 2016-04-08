@@ -3,7 +3,7 @@
  * BUZZER 
 ---------------------------------------------------------------
 */
-#define BUZZER_PIN 6
+#define BUZZER_PIN 4
 
 #define  ADD 0
 #define  DELETE 1

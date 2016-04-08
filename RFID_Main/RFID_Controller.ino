@@ -22,6 +22,18 @@ void RFID_Loop(){
    if (mySerial.available() > 0) {
     // read the incoming byte:
     readVal = mySerial.read();
+    char tempchar = readVal;
+    // Check value
+    if(readVal !=3 && readVal != 2 &&  tempchar < 48){
+      // clear serial to prevent multiple reads
+      clearSerial();
+      
+      // reset reading state
+      counter = -1;
+
+      // Set badge available
+      badgeAvailable = false;
+    }
     
     // a "2" signals the beginning of a tag
     if (readVal == 2) {
@@ -31,9 +43,11 @@ void RFID_Loop(){
     else if (readVal == 3) {
       // Parse tag
       parseTag();
-      
+
+      #ifdef debug
       // Print tag
       printTag();
+      #endif
       
       // clear serial to prevent multiple reads
       clearSerial();
@@ -78,7 +92,7 @@ boolean RFID_BadgeAvailable(){
 // this function clears the rest of data on the serial, to prevent multiple scans
 //-----------------------
 void clearSerial() {
-  while (Serial.read() >= 0) {
+  while (mySerial.read() >= 0) {
     // do nothing
   }
 }

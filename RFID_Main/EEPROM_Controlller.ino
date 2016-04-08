@@ -15,7 +15,7 @@ char m_StoredBadges[MAX_NR_BADGES][BADGE_LENGTH];
 char testBadge[BADGE_LENGTH] = {1,2,3,4,5,6,7,8,9,10,'\0'};
 
 void EEPROM_Setup(){
-
+  //EEPROM_DeleteAllBadges();
 }
 
 void EEPROM_Loop(){
@@ -75,9 +75,11 @@ BadgeType EEPROM_GetBadgeType(char* badge){
 }
 
 boolean EEPROM_CompareBadges(char* badge1, char* badge2){
+  #ifdef debug
   Serial.println("Compare:");
   Serial.println(badge1);
   Serial.println(badge2);
+  #endif
   return strcmp(badge1, badge2)==0;
 }
 

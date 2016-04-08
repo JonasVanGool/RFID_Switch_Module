@@ -8,7 +8,9 @@ MAIN_CONTROLLER_STATE MainCurrentState = STARTUP;
 MAIN_CONTROLLER_STATE MainPreviouseState = STARTUP;
 
 void FLOW_Setup(){
+   #ifdef debug
     Serial.begin(9600);
+   #endif
 }
 
 void FLOW_Loop(){
@@ -144,7 +146,9 @@ void FLOW_Loop(){
 void FLOW_SetState(MAIN_CONTROLLER_STATE newState){
   MainPreviouseState = MainCurrentState;
   MainCurrentState = newState;
+  #ifdef debug
   Serial.print(MainPreviouseState);
   Serial.print("-->");
   Serial.println(MainCurrentState);
+  #endif
 }
