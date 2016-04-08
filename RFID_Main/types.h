@@ -1,9 +1,11 @@
 // Led controller states
 
 enum LED_CONTROLLER_STATE{
-  LED_INIT,
+  LED_STARTUP,
   LED_NORMAL,
   LED_ADD,
+  LED_OK,
+  LED_FAIL,
   LED_DELETE,
   LED_BADGE_ADDED,
   LED_BADGE_DELETED,

@@ -3,7 +3,7 @@
  * BUZZER 
 ---------------------------------------------------------------
 */
-#define BUZZER_PIN 4
+#define BUZZER_PIN 6
 
 #define  ADD 0
 #define  DELETE 1
@@ -72,7 +72,7 @@ void BUZZER_Loop(){
       if(BUZZER_Sequence[m_Cmd][m_CurrentNote][0] == -1){
          m_CmdReady = true;
          noTone(BUZZER_PIN);
-         Serial.println("end");
+         RFID_StartListening();
       }else{
         noTone(BUZZER_PIN);
         tone(BUZZER_PIN,BUZZER_Sequence[m_Cmd][m_CurrentNote][0]);
@@ -86,10 +86,11 @@ void BUZZER_StartSequence(byte BuzzerSequence){
   if(!m_CmdReady)
     return;
   // Initialize variables
+  RFID_StopListening();
   m_Cmd = BuzzerSequence;
   m_CmdStart = true;
   m_CmdReady = false;
-  m_CurrentNote == 0;
+  m_CurrentNote = 0;
   // Start first note
   tone(BUZZER_PIN,BUZZER_Sequence[m_Cmd][m_CurrentNote][0]);
   m_StartTimeNote = millis();

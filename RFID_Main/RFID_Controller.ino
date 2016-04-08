@@ -7,9 +7,9 @@
 #define RFID_PIN 2
 // RFID Reader variables
 int readVal = 0; // individual character read from serial
-unsigned int readData[10]; // data read from serial
+unsigned int readData[BADGE_LENGTH]; // data read from serial
 int counter = -1; // counter to keep position in the buffer
-char tagId[10]; // final tag ID converted to a string
+char tagId[BADGE_LENGTH]; // final tag ID converted to a string
 SoftwareSerial mySerial(RFID_PIN, 11); // RX, TX
 boolean badgeAvailable = false;
 long lastReadTime = 0;
@@ -58,6 +58,10 @@ void RFID_StartListening(){
   mySerial.begin(9600); 
 }
 
+void RFID_StopListening(){
+  mySerial.end(); 
+}
+
 char* RFID_ReadBadge(){
   lastReadTime = millis();
   badgeAvailable = false;
@@ -84,7 +88,11 @@ void clearSerial() {
 //-----------------------
 void printTag() {
   Serial.print("Tag value: ");
-  Serial.println(tagId);
+  for(int i=0; i<BADGE_LENGTH;i++){
+    Serial.print(",");
+    Serial.print(tagId[i],DEC);
+  }
+  Serial.println("");
 }
 
 //-----------------------
@@ -92,7 +100,7 @@ void printTag() {
 //-----------------------
 void parseTag() {
   int i;
-  for (i = 0; i < 10; ++i) {
+  for (i = 0; i < 10; i++) {
     tagId[i] = readData[i];
   }
 }
