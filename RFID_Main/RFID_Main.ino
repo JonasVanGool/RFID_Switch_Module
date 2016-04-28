@@ -11,12 +11,14 @@ void setup() {
   EEPROM_Setup();
   BUZZER_Setup();
   RELAY_Setup();
+  TRANSMIT_Setup();
 }
 
 //-----------------------
 // Controller
 //-----------------------
 void loop() {
+  TRANSMIT_Loop();
   RFID_Loop();
   LED_Loop();
   EEPROM_Loop();

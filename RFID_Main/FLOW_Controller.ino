@@ -135,6 +135,36 @@ void FLOW_Loop(){
           break;
         }    
       } 
+      break;
+    case WAIT_FOR_SCAN_TRANSMIT:
+      if(RFID_BadgeAvailable()){
+        char* tempBadge = RFID_ReadBadge();
+        switch(EEPROM_GetBadgeType(tempBadge)){
+          case MASTER_BADGE:
+            BUZZER_StartSequence(OK);
+            LED_SetState(LED_OK,LED_NORMAL);
+            FLOW_SetState(WAIT_FOR_SCAN_NORMAL);  
+          break;
+          case UNKNOWN_BADGE:
+            BUZZER_StartSequence(FAIL);
+            LED_SetState(LED_FAIL,LED_NORMAL);
+            FLOW_SetState(WAIT_FOR_SCAN_NORMAL);
+          break;
+          case KNOWN_BADGE:
+            if(EEPROM_DeleteBadgeFromMemory(tempBadge)){
+              BUZZER_StartSequence(OK);
+              LED_SetState(LED_OK,LED_NORMAL);
+              FLOW_SetState(WAIT_FOR_SCAN_NORMAL);
+            }else{
+              BUZZER_StartSequence(FAIL);
+              LED_SetState(LED_FAIL,LED_NORMAL);
+              FLOW_SetState(WAIT_FOR_SCAN_NORMAL);
+            }
+          break;
+          default:
+          break;
+        }    
+      } 
       break; 
     case ERROR_STATE:
       break;
