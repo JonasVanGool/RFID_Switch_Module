@@ -7,10 +7,10 @@
 
 #define MAX_NR_BADGES 10
 #define BADGE_LENGTH 11
+#define TWO_MINUTES 120000
 char m_MasterBadge[BADGE_LENGTH] = {48,48,48,48,54,70,55,56,56,65,'\0'};
 char m_EmptyBadge[BADGE_LENGTH] = {0,0,0,0,0,0,0,0,0,0,'\0'};
 char m_StoredBadges[MAX_NR_BADGES][BADGE_LENGTH];
-char testBadge[BADGE_LENGTH] = {1,2,3,4,5,6,7,8,9,10,'\0'};
 
 #define HISTORY_SIZE 5
 byte m_LoginBadgeHistory[HISTORY_SIZE];
@@ -24,12 +24,19 @@ byte m_MemoryControl[MEMORY_PARTITIONS];
 int adressStoredBadges = 0;
 int adressLoginBadgeHistory = 0;
 int adressLoginTimeHistory = 0;
-
+long loginTimer = 0;
+byte loginTimerValue = 0;
 void EEPROM_Setup(){
   //EEPROM_InitAllMemory();
+  EEPROM_ReadAllData();
 }
 
 void EEPROM_Loop(){
+  // Only count when logged in
+  if((millis()-loginTimer>TWO_MINUTES) && m_LoginTimeHistory[0] == 255 /*to prevent over flow*/){
+    loginTimer = millis();
+    loginTimerValue++;
+  }
 }
 
 void EEPROM_InitAllMemory(){
@@ -76,6 +83,38 @@ char EEPROM_GetReadPartition(){
     }
   }
   return MEMORY_PARTITIONS-1;
+}
+
+boolean EEPROM_LogIn(char* badge){
+  //shift memory
+  for(int i=0; i<HISTORY_SIZE-1;i++){
+    m_LoginBadgeHistory[i+1] = m_LoginBadgeHistory[i];
+    m_LoginTimeHistory[i+1] = m_LoginTimeHistory[i];
+  }
+  byte badgeNumber = EEPROM_GetBadgeNumber(badge);
+  if(badgeNumber == 255)
+    return false;
+  m_LoginBadgeHistory[0] = badgeNumber;
+  m_LoginTimeHistory[0] = 255;
+  loginTimerValue = 0;
+  // Save all the data
+  EEPROM_SaveAllData();
+}
+
+boolean EEPROM_LogOut(boolean followedByLogin){
+   m_LoginTimeHistory[0] = loginTimerValue;
+   loginTimerValue = 0;
+   if(!followedByLogin)
+    EEPROM_SaveAllData();
+   return true;
+}
+
+byte EEPROM_GetBadgeNumber(char* badge){
+  for(int i = 0; i<MAX_NR_BADGES; i ++){
+    if(EEPROM_CompareBadges(badge,m_StoredBadges[i])
+      return i;
+  }
+  return 255;
 }
 
 byte EEPROM_GetNewPartition(){
