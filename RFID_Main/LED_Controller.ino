@@ -117,7 +117,19 @@ void LED_Loop(){
         LED_SetValue(255,1000);
       }
     }
-  break;   
+  break;  
+   case LED_TRANSMIT:
+    if((millis() - preTime)>1000){
+      LED_SetSaturation(255,0);
+      LED_SetHue(128,0);
+      preTime = millis();
+      if(setPointValue == 255){
+        LED_SetValue(0,1000);
+      }else{
+        LED_SetValue(255,1000);
+      }
+    }
+  break;  
     default:
       break;
   } 

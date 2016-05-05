@@ -27,7 +27,7 @@ int adressLoginTimeHistory = 0;
 long loginTimer = 0;
 byte loginTimerValue = 0;
 void EEPROM_Setup(){
-  //EEPROM_InitAllMemory();
+  EEPROM_InitAllMemory();
   EEPROM_ReadAllData();
 }
 
@@ -101,6 +101,12 @@ boolean EEPROM_LogIn(char* badge){
   EEPROM_SaveAllData();
 }
 
+char* EEPROM_GetLoggedInBadge(){
+  if(m_LoginTimeHistory[0] != 255)
+    return m_EmptyBadge;
+  return m_StoredBadges[m_LoginBadgeHistory[0]];
+}
+
 boolean EEPROM_LogOut(boolean followedByLogin){
    m_LoginTimeHistory[0] = loginTimerValue;
    loginTimerValue = 0;
@@ -111,7 +117,7 @@ boolean EEPROM_LogOut(boolean followedByLogin){
 
 byte EEPROM_GetBadgeNumber(char* badge){
   for(int i = 0; i<MAX_NR_BADGES; i ++){
-    if(EEPROM_CompareBadges(badge,m_StoredBadges[i])
+    if(EEPROM_CompareBadges(badge,m_StoredBadges[i]))
       return i;
   }
   return 255;
@@ -139,6 +145,7 @@ boolean EEPROM_DeleteBadgeFromMemory(char* badge){
   for (int i = 0; i< MAX_NR_BADGES; i++){
     if(EEPROM_CompareBadges(badge, m_StoredBadges[i])){
        strncpy(m_StoredBadges[i], m_EmptyBadge, BADGE_LENGTH);
+       EEPROM_SaveAllData();
        return true;
     }    
   }
@@ -149,6 +156,7 @@ boolean EEPROM_WriteBadgeToMemory(char* badge){
   char emptyLocation = EERPROM_GetEmptyBadgeLocation();
   if(emptyLocation != -1){
     strncpy(m_StoredBadges[emptyLocation], badge, BADGE_LENGTH);
+    EEPROM_SaveAllData();
     return true;
   }
   return false;
