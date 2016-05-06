@@ -4,18 +4,18 @@
 ---------------------------------------------------------------
 */
 
-#define TRANSMIT_PIN 3
+#define TRANSMIT_PIN 6
 #define DECOUPLING_MASK 0b11001010 
 // BAUDRATE 600bps
 #define delay1 1532
 #define delay2 1534
-#define TRANSMIT_INVERVAL 3000
+#define TRANSMIT_INVERVAL 5000
 byte transmitData = false;
 byte delimiter[5] = {0,1,0,1,0};
 long previouseTransmitTime = 0;
 
 void TRANSMIT_Setup(){
-  
+  pinMode(TRANSMIT_PIN,OUTPUT);
 }
 
 void TRANSMIT_Loop(){
@@ -36,6 +36,7 @@ void TRANSMIT_Loop(){
 }
 
 void TRANSMIT_On(){
+  previouseTransmitTime = millis();
   transmitData = true;
 }
 

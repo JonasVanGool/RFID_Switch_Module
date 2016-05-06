@@ -10,13 +10,20 @@ char* tempBadge;
  
 void FLOW_Setup(){
    #ifdef debug
-    Serial.begin(9600);
+    Serial.begin(115200);
    #endif
 }
 
 void FLOW_Loop(){
   switch(MainCurrentState){
     case STARTUP:
+      if(!EEPROM_CompareBadges(EEPROM_GetLoggedInBadge(),m_EmptyBadge)){
+        RELAY_On();
+        BUZZER_StartSequence(OK);
+        LED_SetState(LED_OK,LED_NORMAL);
+        FLOW_SetState(WAIT_FOR_SCAN_NORMAL);
+        break;
+      }
       LED_SetState(LED_STARTUP);
       BUZZER_StartSequence(BUZZER_STARTUP);
       FLOW_SetState(WAIT_FOR_SCAN_STARTUP);
@@ -164,8 +171,7 @@ void FLOW_Loop(){
     case WAIT_FOR_SCAN_TRANSMIT:
       if(RFID_BadgeAvailable()){
         TRANSMIT_Off();
-        char* tempBadge = RFID_ReadBadge();
-        switch(EEPROM_GetBadgeType(tempBadge)){
+        switch(EEPROM_GetBadgeType(RFID_ReadBadge())){
           case MASTER_BADGE:
             FLOW_SetState(STEP_UNKNOWN_BADGE);
             break;
@@ -184,7 +190,8 @@ void FLOW_Loop(){
           default:
             break;
         }    
-      } 
+      }
+      break; 
     case STEP_UNKNOWN_BADGE:
       BUZZER_StartSequence(FAIL);
       LED_SetState(LED_FAIL,LED_STARTUP);
