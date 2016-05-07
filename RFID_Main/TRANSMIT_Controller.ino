@@ -21,15 +21,15 @@ void TRANSMIT_Setup(){
 void TRANSMIT_Loop(){
   if(transmitData && (millis()-previouseTransmitTime > TRANSMIT_INVERVAL)){
     previouseTransmitTime = millis();
+    // transmit start frame 
+    TRANSMIT_transmitArray(5,(uint8_t*)delimiter);
+    delay(50); 
     for(int i = 0; i< MAX_NR_BADGES; i++){
        TRANSMIT_transmitArray(BADGE_LENGTH,(uint8_t*)m_StoredBadges[i]);
+       delay(10);
     }
-    delay(50);
-    TRANSMIT_transmitArray(5,(uint8_t*)delimiter);
     delay(50); 
     TRANSMIT_transmitArray(HISTORY_SIZE,(uint8_t*)m_LoginBadgeHistory);
-    delay(50); 
-    TRANSMIT_transmitArray(5,(uint8_t*)delimiter);
     delay(50); 
     TRANSMIT_transmitArray(HISTORY_SIZE,(uint8_t*)m_LoginTimeHistory);
   }
