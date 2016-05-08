@@ -152,6 +152,11 @@ void LED_SetState(LED_CONTROLLER_STATE ledState){
   LedCurrentState = ledState;
 }
 
+void LED_HardWriteColor(byte saturation, byte hue, byte value){
+  leds[0]  = CHSV( hue, saturation, value);
+  FastLED.show();
+}
+
 void LED_SetState(LED_CONTROLLER_STATE ledState,LED_CONTROLLER_STATE nextLedState ){
   LedPreviouseState = LedCurrentState;
   LedCurrentState = ledState;

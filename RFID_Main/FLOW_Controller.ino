@@ -62,9 +62,15 @@ void FLOW_Loop(){
         tempBadge = RFID_ReadBadge();
         switch(EEPROM_GetBadgeType(tempBadge)){
           case MASTER_BADGE:
+            if(!EEPROM_LogOut(false)){
+              BUZZER_StartSequence(BUZZER_ERROR);
+              LED_SetState(LED_ERROR);
+              FLOW_SetState(ERROR_STATE);
+            }
             BUZZER_StartSequence(OK);
-            LED_SetState(LED_OK,LED_NORMAL);
-            FLOW_SetState(WAIT_FOR_SCAN_NORMAL);    
+            LED_SetState(LED_OK,LED_STARTUP);
+            RELAY_Off();
+            FLOW_SetState(WAIT_FOR_SCAN_STARTUP);
             break;
           case UNKNOWN_BADGE:
             if(!EEPROM_LogOut(false)){

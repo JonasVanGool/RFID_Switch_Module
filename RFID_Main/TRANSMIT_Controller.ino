@@ -20,6 +20,7 @@ void TRANSMIT_Setup(){
 
 void TRANSMIT_Loop(){
   if(transmitData && (millis()-previouseTransmitTime > TRANSMIT_INVERVAL)){
+    LED_HardWriteColor(255,128,255);
     previouseTransmitTime = millis();
     // transmit start frame 
     TRANSMIT_transmitArray(5,(uint8_t*)delimiter);
